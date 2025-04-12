@@ -35,14 +35,8 @@ class Aria2cShell(cmd.Cmd):
 def main():
     print("Hello from aria2c-mcp!")
     print("check if have aria2c")
-    if not check_aria2c():
-        print("not found aria2c, download it")
-        download_aria2c()
-        if not check_aria2c():
-            print("download failed")
-            exit(1)
-        print("download success")
-    print("check success")
+    auto_download_aria2c()
+    auto_download_ariang()
     create_default_config()
 
     if not check_aria2c_rpc():

@@ -7,9 +7,31 @@ import tarfile
 import shutil
 import atexit  # 新增导入
 
+# 检查有没有aria2NG
+def check_aria2NG():
+    """检查当前目录下是否存在 AriaNg"""
+    return os.path.exists("AriaNg") or os.path.exists("AriaNg/index.html")
+def download_ariang():
+    """下载 AriaNg"""
+    url = "https://github.com/mayswind/AriaNg/releases/download/1.2.4/AriaNg-1.2.4-AllInOne.zip"
+    filename = "AriaNg.zip"
+
+    print(f"正在下载 AriaNg 到当前目录...")
+    response = requests.get(url, stream=True)
+    with open(filename, "wb") as f:
+        for chunk in response.iter_content(chunk_size=8192):
+            f.write(chunk)
+
+    with zipfile.ZipFile(filename, "r") as zip_ref:
+        zip_ref.extractall("AriaNg")
+
+    os.remove(filename)
+    print("AriaNg 下载完成")
+
 def check_aria2c():
     """检查当前目录下是否存在 aria2c"""
     return os.path.exists("aria2c") or os.path.exists("aria2c.exe")
+
 
 def download_aria2c():
     """根据系统类型下载 aria2c"""
@@ -54,15 +76,29 @@ def auto_download_aria2c():
         print("当前目录下已存在 aria2c，无需下载")
     else:
         download_aria2c()
+        if not check_aria2c():
+            print("下载失败")
+            exit(1)
+        print("下载成功")
 
+
+def auto_download_ariang():
+    if check_aria2NG():
+        print("当前目录下已存在 AriaNg，无需下载")
+    else:
+        download_ariang()
+        if not check_aria2NG():
+            print("下载失败")
+            exit(1)
+        print("下载成功")
 # 创建默认配置文件
 def create_default_config():
     if not os.path.exists("aria2.conf"):
         with open("aria2.conf", "w") as f:
-            f.write('''enable-rpc=true
-                        rpc-listen-all=true
-                        rpc-listen-port=6800
-                        dir=./Downloads''')
+            f.write("enable-rpc=true\n\
+                rpc-listen-all=true\n\
+                rpc-listen-port=16800\n\
+                dir=./Downloads")
         print("创建默认配置文件成功")
     else:
         print("配置文件已存在")
@@ -100,5 +136,3 @@ def stop_aria2c_rpc():
 # 注册退出处理函数
 atexit.register(stop_aria2c_rpc)
 
-if __name__ == "__main__":
-    auto_download_aria2c()
