@@ -48,7 +48,7 @@ def main():
         start_aria2c_rpc()
     
     time.sleep(1)
-    start_ariang()
+    
 
     Aria2cShell().cmdloop()
 
