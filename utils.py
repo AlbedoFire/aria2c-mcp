@@ -54,5 +54,41 @@ def auto_download_aria2c():
     else:
         download_aria2c()
 
+# 创建默认配置文件
+def create_default_config():
+    if not os.path.exists("aria2.conf"):
+        with open("aria2.conf", "w") as f:
+            f.write('''enable-rpc=true
+                        rpc-listen-all=true
+                        rpc-listen-port=6800
+                        dir=./Downloads''')
+        print("创建默认配置文件成功")
+    else:
+        print("配置文件已存在")
+
+# 启动aria2c的rpc
+def start_aria2c_rpc(config_file="aria2.conf"):
+    if platform.system() == "Windows":
+        subprocess.Popen(["aria2c", "--conf-path=" + config_file])
+    else:
+        subprocess.Popen(["aria2c", "--conf-path=" + config_file, "--daemon=true"])
+    print("aria2c started")
+
+# 检查aria2c是否有进程
+def check_aria2c_rpc():
+    if platform.system() == "Windows":
+        result = subprocess.run(["tasklist", "/FI", "IMENAME eq aria2c.exe"], capture_output=True, text=True)
+        return "aria2c.exe" in result.stdout
+    else:
+        result = subprocess.run(["ps", "-ef"], capture_output=True, text=True)
+        return "aria2c" in result.stdout
+
+
+# 停止aria2c的rpc
+def stop_aria2c_rpc():
+    if platform.system() == "Windows":
+        subprocess.Popen(["taskkill", "/F", "/IM", "aria2c.exe"])
+    else:
+        subprocess.Popen(["pkill", "aria2c"])
 if __name__ == "__main__":
     auto_download_aria2c()
