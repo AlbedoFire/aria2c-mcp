@@ -98,6 +98,7 @@ def create_default_config():
             f.write("enable-rpc=true\n"
                    "rpc-listen-all=true\n"
                    "rpc-listen-port=16800\n"
+                   "rpc-allow-origin-all=true\n"
                    "dir=./Downloads")
         print("创建默认配置文件成功")
     else:
