@@ -13,7 +13,7 @@ def check_aria2NG():
     return os.path.exists("AriaNg") or os.path.exists("AriaNg/index.html")
 def download_ariang():
     """下载 AriaNg"""
-    url = "https://github.com/mayswind/AriaNg/releases/download/1.2.4/AriaNg-1.2.4-AllInOne.zip"
+    url = "https://github.com/mayswind/AriaNg/releases/download/1.3.10/AriaNg-1.3.10-AllInOne.zip"
     filename = "AriaNg.zip"
 
     print(f"正在下载 AriaNg 到当前目录...")
@@ -95,10 +95,10 @@ def auto_download_ariang():
 def create_default_config():
     if not os.path.exists("aria2.conf"):
         with open("aria2.conf", "w") as f:
-            f.write("enable-rpc=true\n\
-                rpc-listen-all=true\n\
-                rpc-listen-port=16800\n\
-                dir=./Downloads")
+            f.write("enable-rpc=true\n"
+                   "rpc-listen-all=true\n"
+                   "rpc-listen-port=16800\n"
+                   "dir=./Downloads")
         print("创建默认配置文件成功")
     else:
         print("配置文件已存在")
@@ -133,6 +133,11 @@ def stop_aria2c_rpc():
     else:
         subprocess.Popen(["pkill", "aria2c"])
 
+def start_ariang():
+    if platform.system() == "Windows":
+        subprocess.Popen(["start", "", "AriaNg/index.html"], shell=True)  # Windows使用start命令
+    else:
+        subprocess.Popen(["xdg-open", "AriaNg/index.html"])  # Linux/Mac使用xdg-open
 # 注册退出处理函数
 atexit.register(stop_aria2c_rpc)
 
