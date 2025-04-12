@@ -12,7 +12,7 @@ mcp = FastMCP()
 async def add_download(url) -> str:
     download = aria2.add_uris([url])
     return f"下载任务添加成功，任务id为{download.gid}"
-@cmp.tool()
+@mcp.tool()
 async def get_download_progress(gid)->str:
     download = aria2.get_download(gid)
     return f"下载进度为{download.progress_string()}"
@@ -35,7 +35,7 @@ async def pause_download(gid)->None:
     download.pause()
     return f"下载任务{gid}暂停成功"
 
-@mcp.resource()
+@mcp.resource("config://default")
 async def get_default_config() -> str:
     return "enable-rpc=true\n"+"rpc-listen-all=true\n"\
                    +"rpc-listen-port=16800\n"+\
