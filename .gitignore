@@ -9,3 +9,4 @@ wheels/
 # Virtual environments
 .venv
 aria2c.exe
+aria2c.log

@@ -5,6 +5,7 @@ import requests
 import zipfile
 import tarfile
 import shutil
+import atexit  # 新增导入
 
 def check_aria2c():
     """检查当前目录下是否存在 aria2c"""
@@ -68,11 +69,16 @@ def create_default_config():
 
 # 启动aria2c的rpc
 def start_aria2c_rpc(config_file="aria2.conf"):
+    log_file = open("aria2c.log", "a")  # 追加模式打开日志文件
     if platform.system() == "Windows":
-        subprocess.Popen(["aria2c", "--conf-path=" + config_file])
+        subprocess.Popen(["aria2c", "--conf-path=" + config_file],
+                        stdout=log_file,  # 输出重定向到文件
+                        stderr=log_file)  # 错误重定向到文件
     else:
-        subprocess.Popen(["aria2c", "--conf-path=" + config_file, "--daemon=true"])
-    print("aria2c started")
+        subprocess.Popen(["aria2c", "--conf-path=" + config_file, "--daemon=true"],
+                        stdout=log_file,
+                        stderr=log_file)
+    print("aria2c started, 输出已重定向到aria2c.log")
 
 # 检查aria2c是否有进程
 def check_aria2c_rpc():
@@ -90,5 +96,9 @@ def stop_aria2c_rpc():
         subprocess.Popen(["taskkill", "/F", "/IM", "aria2c.exe"])
     else:
         subprocess.Popen(["pkill", "aria2c"])
+
+# 注册退出处理函数
+atexit.register(stop_aria2c_rpc)
+
 if __name__ == "__main__":
     auto_download_aria2c()
